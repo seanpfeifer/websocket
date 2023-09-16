@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"google.golang.org/protobuf/proto"
 )
 
 // Diff returns a human readable diff between v1 and v2
