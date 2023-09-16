@@ -1,6 +1,6 @@
 # Echo Example
 
-This directory contains a echo server example using nhooyr.io/websocket.
+This directory contains a echo server example using github.com/seanpfeifer/websocket.
 
 ```bash
 $ cd examples/echo
@@ -8,7 +8,7 @@ $ go run . localhost:0
 listening on http://127.0.0.1:51055
 ```
 
-You can use a WebSocket client like https://github.com/hashrocket/ws to connect. All messages
+You can use a WebSocket client like <https://github.com/hashrocket/ws> to connect. All messages
 written will be echoed back.
 
 ## Structure
