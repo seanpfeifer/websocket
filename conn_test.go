@@ -8,14 +8,11 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"net/http"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/seanpfeifer/websocket"
-	"github.com/seanpfeifer/websocket/internal/errd"
 	"github.com/seanpfeifer/websocket/internal/test/assert"
 	"github.com/seanpfeifer/websocket/internal/test/wstest"
 	"github.com/seanpfeifer/websocket/internal/test/xrand"
@@ -32,7 +29,7 @@ func TestConn(t *testing.T) {
 		t.Parallel()
 
 		compressionMode := func() websocket.CompressionMode {
-			return websocket.CompressionMode(xrand.Int(int(websocket.CompressionDisabled) + 1))
+			return websocket.CompressionMode(xrand.Int(int(websocket.CompressionContextTakeover) + 1))
 		}
 
 		for i := 0; i < 5; i++ {
@@ -169,7 +166,7 @@ func TestConn(t *testing.T) {
 			return n2.Close()
 		})
 
-		b, err := ioutil.ReadAll(n1)
+		b, err := io.ReadAll(n1)
 		assert.Success(t, err)
 
 		_, err = n1.Read(nil)
@@ -200,7 +197,7 @@ func TestConn(t *testing.T) {
 			return nil
 		})
 
-		_, err := ioutil.ReadAll(n1)
+		_, err := io.ReadAll(n1)
 		assert.Contains(t, err, `unexpected frame type read (expected MessageBinary): MessageText`)
 
 		select {
@@ -448,17 +445,4 @@ func BenchmarkConn(b *testing.B) {
 			assert.Success(b, err)
 		})
 	}
-}
-
-func echoServer(w http.ResponseWriter, r *http.Request, opts *websocket.AcceptOptions) (err error) {
-	defer errd.Wrap(&err, "echo server failed")
-
-	c, err := websocket.Accept(w, r, opts)
-	if err != nil {
-		return err
-	}
-	defer c.Close(websocket.StatusInternalError, "")
-
-	err = wstest.EchoLoop(r.Context(), c)
-	return assertCloseStatus(websocket.StatusNormalClosure, err)
 }

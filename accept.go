@@ -52,7 +52,7 @@ type AcceptOptions struct {
 	OriginPatterns []string
 
 	// CompressionMode controls the compression mode.
-	// Defaults to CompressionNoContextTakeover.
+	// Defaults to CompressionDisabled.
 	//
 	// See docs on CompressionMode for details.
 	CompressionMode CompressionMode
@@ -81,7 +81,6 @@ func accept(w http.ResponseWriter, r *http.Request, opts *AcceptOptions) (_ *Con
 	if opts == nil {
 		opts = &AcceptOptions{}
 	}
-	opts = &*opts
 
 	errCode, err := verifyClientRequest(w, r)
 	if err != nil {

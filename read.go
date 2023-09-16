@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"strings"
 	"time"
 
@@ -39,7 +38,7 @@ func (c *Conn) Read(ctx context.Context) (MessageType, []byte, error) {
 		return 0, nil, err
 	}
 
-	b, err := ioutil.ReadAll(r)
+	b, err := io.ReadAll(r)
 	return typ, b, err
 }
 
