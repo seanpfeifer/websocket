@@ -29,7 +29,7 @@ func TestConn(t *testing.T) {
 		t.Parallel()
 
 		compressionMode := func() websocket.CompressionMode {
-			return websocket.CompressionMode(xrand.Int(int(websocket.CompressionDisabled) + 1))
+			return websocket.CompressionMode(xrand.Int(int(websocket.CompressionContextTakeover) + 1))
 		}
 
 		for i := 0; i < 5; i++ {

@@ -11,15 +11,14 @@ package websocket
 type CompressionMode int
 
 const (
-	// CompressionNoContextTakeover grabs a new flate.Reader and flate.Writer as needed
-	// for every message. This applies to both server and client side.
+	// CompressionDisabled disables the deflate extension.
 	//
-	// This means less efficient compression as the sliding window from previous messages
-	// will not be used but the memory overhead will be lower if the connections
-	// are long lived and seldom used.
+	// Use this if you are using a predominantly binary protocol with very
+	// little duplication in between messages or CPU and memory are more
+	// important than bandwidth.
 	//
-	// The message will only be compressed if greater than 512 bytes.
-	CompressionNoContextTakeover CompressionMode = iota
+	// This is the default.
+	CompressionDisabled CompressionMode = iota
 
 	// CompressionContextTakeover uses a flate.Reader and flate.Writer per connection.
 	// This enables reusing the sliding window from previous messages.
@@ -30,10 +29,13 @@ const (
 	// used instead as this is required by the RFC.
 	CompressionContextTakeover
 
-	// CompressionDisabled disables the deflate extension.
+	// CompressionNoContextTakeover grabs a new flate.Reader and flate.Writer as needed
+	// for every message. This applies to both server and client side.
 	//
-	// Use this if you are using a predominantly binary protocol with very
-	// little duplication in between messages or CPU and memory are more
-	// important than bandwidth.
-	CompressionDisabled
+	// This means less efficient compression as the sliding window from previous messages
+	// will not be used but the memory overhead will be lower if the connections
+	// are long lived and seldom used.
+	//
+	// The message will only be compressed if greater than 512 bytes.
+	CompressionNoContextTakeover
 )
