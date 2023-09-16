@@ -14,9 +14,6 @@ import (
 	"time"
 	_ "unsafe"
 
-	"github.com/gobwas/ws"
-	_ "github.com/gorilla/websocket"
-
 	"github.com/seanpfeifer/websocket/internal/test/assert"
 )
 
@@ -154,22 +151,6 @@ func Benchmark_mask(b *testing.B) {
 
 				for i := 0; i < b.N; i++ {
 					mask(key32, p)
-				}
-			},
-		},
-		{
-			name: "gorilla",
-			fn: func(b *testing.B, key [4]byte, p []byte) {
-				for i := 0; i < b.N; i++ {
-					gorillaMaskBytes(key, 0, p)
-				}
-			},
-		},
-		{
-			name: "gobwas",
-			fn: func(b *testing.B, key [4]byte, p []byte) {
-				for i := 0; i < b.N; i++ {
-					ws.Cipher(p, key, 0)
 				}
 			},
 		},

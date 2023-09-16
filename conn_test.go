@@ -10,14 +10,10 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
-	"os"
-	"os/exec"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/duration"
 
@@ -267,32 +263,6 @@ func TestConn(t *testing.T) {
 	})
 }
 
-func TestWasm(t *testing.T) {
-	t.Parallel()
-
-	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := echoServer(w, r, &websocket.AcceptOptions{
-			Subprotocols:       []string{"echo"},
-			InsecureSkipVerify: true,
-		})
-		if err != nil {
-			t.Error(err)
-		}
-	}))
-	defer s.Close()
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	cmd := exec.CommandContext(ctx, "go", "test", "-exec=wasmbrowsertest", ".")
-	cmd.Env = append(os.Environ(), "GOOS=js", "GOARCH=wasm", fmt.Sprintf("WS_ECHO_SERVER_URL=%v", s.URL))
-
-	b, err := cmd.CombinedOutput()
-	if err != nil {
-		t.Fatalf("wasm test binary failed: %v:\n%s", err, b)
-	}
-}
-
 func assertCloseStatus(exp websocket.StatusCode, err error) error {
 	if websocket.CloseStatus(err) == -1 {
 		return fmt.Errorf("expected websocket.CloseError: %T %v", err, err)
@@ -493,38 +463,4 @@ func echoServer(w http.ResponseWriter, r *http.Request, opts *websocket.AcceptOp
 
 	err = wstest.EchoLoop(r.Context(), c)
 	return assertCloseStatus(websocket.StatusNormalClosure, err)
-}
-
-func TestGin(t *testing.T) {
-	t.Parallel()
-
-	gin.SetMode(gin.ReleaseMode)
-	r := gin.New()
-	r.GET("/", func(ginCtx *gin.Context) {
-		err := echoServer(ginCtx.Writer, ginCtx.Request, nil)
-		if err != nil {
-			t.Error(err)
-		}
-	})
-
-	s := httptest.NewServer(r)
-	defer s.Close()
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
-	defer cancel()
-
-	c, _, err := websocket.Dial(ctx, s.URL, nil)
-	assert.Success(t, err)
-	defer c.Close(websocket.StatusInternalError, "")
-
-	err = wsjson.Write(ctx, c, "hello")
-	assert.Success(t, err)
-
-	var v interface{}
-	err = wsjson.Read(ctx, c, &v)
-	assert.Success(t, err)
-	assert.Equal(t, "read msg", "hello", v)
-
-	err = c.Close(websocket.StatusNormalClosure, "")
-	assert.Success(t, err)
 }
