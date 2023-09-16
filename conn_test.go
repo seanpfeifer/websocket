@@ -14,8 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/duration"
+	"google.golang.org/protobuf/types/known/durationpb"
 
 	"github.com/seanpfeifer/websocket"
 	"github.com/seanpfeifer/websocket/internal/errd"
@@ -249,11 +248,11 @@ func TestConn(t *testing.T) {
 
 		tt.goEchoLoop(c2)
 
-		exp := ptypes.DurationProto(100)
+		exp := durationpb.New(100)
 		err := wspb.Write(tt.ctx, c1, exp)
 		assert.Success(t, err)
 
-		act := &duration.Duration{}
+		act := &durationpb.Duration{}
 		err = wspb.Read(tt.ctx, c1, act)
 		assert.Success(t, err)
 		assert.Equal(t, "read msg", exp, act)
