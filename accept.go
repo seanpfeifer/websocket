@@ -81,7 +81,6 @@ func accept(w http.ResponseWriter, r *http.Request, opts *AcceptOptions) (_ *Con
 	if opts == nil {
 		opts = &AcceptOptions{}
 	}
-	opts = &*opts
 
 	errCode, err := verifyClientRequest(w, r)
 	if err != nil {
