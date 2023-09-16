@@ -14,8 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"google.golang.org/protobuf/types/known/durationpb"
-
 	"github.com/seanpfeifer/websocket"
 	"github.com/seanpfeifer/websocket/internal/errd"
 	"github.com/seanpfeifer/websocket/internal/test/assert"
@@ -24,6 +22,7 @@ import (
 	"github.com/seanpfeifer/websocket/internal/xsync"
 	"github.com/seanpfeifer/websocket/wsjson"
 	"github.com/seanpfeifer/websocket/wspb"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 func TestConn(t *testing.T) {
