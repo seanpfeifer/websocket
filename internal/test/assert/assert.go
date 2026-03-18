@@ -12,14 +12,14 @@ import (
 )
 
 // Diff returns a human readable diff between v1 and v2
-func Diff(v1, v2 interface{}) string {
+func Diff(v1, v2 any) string {
 	return cmp.Diff(v1, v2, cmpopts.EquateErrors(), cmp.Exporter(func(r reflect.Type) bool {
 		return true
 	}), cmp.Comparer(proto.Equal))
 }
 
 // Equal asserts exp == act.
-func Equal(t testing.TB, name string, exp, act interface{}) {
+func Equal(t testing.TB, name string, exp, act any) {
 	t.Helper()
 
 	if diff := Diff(exp, act); diff != "" {
@@ -46,7 +46,7 @@ func Error(t testing.TB, err error) {
 }
 
 // Contains asserts the fmt.Sprint(v) contains sub.
-func Contains(t testing.TB, v interface{}, sub string) {
+func Contains(t testing.TB, v any, sub string) {
 	t.Helper()
 
 	s := fmt.Sprint(v)

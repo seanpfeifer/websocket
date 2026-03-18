@@ -1,5 +1,4 @@
 //go:build !js
-// +build !js
 
 package websocket
 
@@ -351,7 +350,7 @@ func headerTokens(h http.Header, key string) []string {
 	var tokens []string
 	for _, v := range h[key] {
 		v = strings.TrimSpace(v)
-		for _, t := range strings.Split(v, ",") {
+		for t := range strings.SplitSeq(v, ",") {
 			t = strings.TrimSpace(t)
 			tokens = append(tokens, t)
 		}
