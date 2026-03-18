@@ -31,7 +31,7 @@ func Test_echoServer(t *testing.T) {
 	}
 	defer c.Close(websocket.StatusInternalError, "the sky is falling")
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		err = wsjson.Write(ctx, c, map[string]int{
 			"i": i,
 		})

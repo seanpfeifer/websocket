@@ -1,5 +1,4 @@
 //go:build !js
-// +build !js
 
 package websocket
 
@@ -47,7 +46,6 @@ func TestCloseError(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -108,7 +106,6 @@ func Test_parseClosePayload(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -159,7 +156,6 @@ func Test_validWireCloseCode(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -197,7 +193,6 @@ func TestCloseStatus(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 

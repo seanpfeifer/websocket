@@ -69,7 +69,7 @@ func Test_chatServer(t *testing.T) {
 
 		var clients []*client
 		var clientMsgs []map[string]struct{}
-		for i := 0; i < nclients; i++ {
+		for range nclients {
 			cl, err := newClient(ctx, url)
 			assertSuccess(t, err)
 			defer cl.Close()
@@ -87,26 +87,20 @@ func Test_chatServer(t *testing.T) {
 
 		var wg sync.WaitGroup
 		for i, cl := range clients {
-			i := i
-			cl := cl
 
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				err := cl.publishMsgs(ctx, clientMsgs[i])
 				if err != nil {
 					t.Errorf("client %d failed to publish all messages: %v", i, err)
 				}
-			}()
+			})
 
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				err := testAllMessagesReceived(cl, nclients*nmessages, allMessages)
 				if err != nil {
 					t.Errorf("client %d failed to receive all messages: %v", i, err)
 				}
-			}()
+			})
 		}
 
 		wg.Wait()
@@ -139,7 +133,7 @@ func setupTest(t *testing.T) (url string, closeFn func()) {
 func testAllMessagesReceived(cl *client, n int, msgs map[string]struct{}) error {
 	msgs = cloneMessages(msgs)
 
-	for i := 0; i < n; i++ {
+	for range n {
 		msg, err := cl.nextMessage()
 		if err != nil {
 			return err
